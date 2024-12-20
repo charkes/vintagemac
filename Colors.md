@@ -8,10 +8,11 @@ ResEdit, by default, suggests the 34-color Apple Icon Color Set and you must use
 
 To convert icons to modern PNGs, one of the hurdles is converting the Apple 256 color palette to RGB. [Jordan Rose's blog post about Color Palette #8](https://belkadan.com/blog/2018/01/Color-Palette-8/) was helpful. I converted Jordan's `clut8ColorComponents` function to PHP and the resulting RGB values were incorrect -- with some going into the negatives. (I'm putting this down to my PHP conversion and not Jordan's code.)
 
-Using the Digital Color Meter in macOS and the BasiliskII emulator, I can see the pattern in the colors with indeces under 215. The palette starts with RGB of 1, 1, 1. The next color is 1, 1, 0.8. After B hits 0, the next color is R 1, G 0.8, B 1. I told this to ChatGPT and it wrote a corrected function to handle that section of the palette.  The updated PHP function is below and a JSON array of the RGB values is available here: [Apple256ColorPalette.json](Apple256ColorPalette.json).
+Using the Digital Color Meter in macOS and the BasiliskII emulator, I can see the pattern in the colors with indices under 215. The palette starts with RGB of 1, 1, 1. The next color is 1, 1, 0.8. After B hits 0, the next color is R 1, G 0.8, B 1. I told this to ChatGPT and it wrote a corrected function to handle that section of the palette.  The updated PHP function is below and a JSON array of the RGB values (multiplied by 255 and then rounded) is available here: [Apple256ColorPalette.json](Apple256ColorPalette.json).
 
 ```php
-
+// Originally ported to PHP from https://belkadan.com/blog/2018/01/Color-Palette-8/
+// Updated code from ChatGPT.
 function clut8ColorComponents($x) {
   if ($x < 215) {
     // This section was produced by ChatGPT.
@@ -77,13 +78,17 @@ function clut8ColorComponents($x) {
 }
 ```
 
+## Apple Icon Colors
+
+I know this information isn't needed but, for posterity, these are the indices of the Apple Icon Colors in the 256 color palette (in the order presented by ResEdit): 1, 8, 51, 22, 146, 227, 159, 165, 72, 192, 236, 176, 42, 84, 127, 171, 19, 105, 92, 0, 245, 246, 43, 247, 248, 249, 250, 251, 252, 253, 254, 255, 5, 216.
+
 ## Macintosh Human Interface Guidelines
 
 The "Macintosh Human Interface Guidelines" Inside Macintosh book say this about icons:
 
 > ### Icon Colors
 > This section describes the colors and color techniques that you should use when you design your color icons.
-
+>
 > #### The Apple Icon Color Set
 > 
 > Figure 8-23 shows a palette of the standard 256 colors with a mark on each of the 34 colors used for icon design in system software. If you use ResEdit version 2.1 or later to design and create your icons, the Finder icon family editor provides easy access to these colors. Choose Apple Icon Colors from the Color menu. This command sets the palette in the editor (which is similar to the palette in most graphics applications) to contain the 34 colors used for Finder icons. See ResEdit Reference for information on using ResEdit.
